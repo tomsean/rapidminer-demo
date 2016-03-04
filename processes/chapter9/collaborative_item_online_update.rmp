@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="5.3.015">
+  <context>
+    <input>
+      <location>data/collaborative_train</location>
+      <location>data/collaborative_test</location>
+    </input>
+    <output/>
+    <macros>
+      <macro>
+        <key/>
+        <value/>
+      </macro>
+    </macros>
+  </context>
+  <operator activated="true" class="process" compatibility="5.3.015" expanded="true" name="Process">
+    <description>This is the example of collaborative onlin update workflow. 
+The train, test and query set are pre-loaded in the main process.
+The appropriate roles are set using Set Role operator.
+The Item k-NN model is trained using training set and updated using iterative online updates from the query set using Apply Model operator. The updated model is then used to give recommendations for the users from the test set. 
+For more informations check Figure 9.3 in chapter 9 of the RapidMiner: Data Mining Use Cases and Business Analytics Applications book.</description>
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="set_role" compatibility="5.3.015" expanded="true" height="76" name="Set Role Train" width="90" x="246" y="30">
+        <parameter key="attribute_name" value="item_id"/>
+        <parameter key="target_role" value="item identification"/>
+        <list key="set_additional_roles">
+          <parameter key="user_id" value="user identification"/>
+        </list>
+      </operator>
+      <operator activated="true" class="irbrecommender:item_k-NN" compatibility="5.1.001" expanded="true" height="76" name="Item k-NN" width="90" x="380" y="30">
+        <parameter key="k" value="80"/>
+        <parameter key="Weighted Knn" value="false"/>
+      </operator>
+      <operator activated="true" class="multiply" compatibility="5.3.015" expanded="true" height="94" name="Multiply" width="90" x="45" y="75"/>
+      <operator activated="true" class="set_role" compatibility="5.3.015" expanded="true" height="76" name="Set Role Test" width="90" x="246" y="390">
+        <parameter key="attribute_name" value="item_id"/>
+        <parameter key="target_role" value="item identification"/>
+        <list key="set_additional_roles">
+          <parameter key="user_id" value="user identification"/>
+        </list>
+      </operator>
+      <operator activated="true" class="set_role" compatibility="5.3.015" expanded="true" height="76" name="Set Role Query" width="90" x="313" y="255">
+        <parameter key="attribute_name" value="item_id"/>
+        <parameter key="target_role" value="item identification"/>
+        <list key="set_additional_roles">
+          <parameter key="user_id" value="user identification"/>
+        </list>
+      </operator>
+      <operator activated="true" class="irbrecommender:apply_model_ir" compatibility="5.1.001" expanded="true" height="76" name="Update Model" width="90" x="514" y="165">
+        <parameter key="n" value="100"/>
+        <parameter key="Online updates" value="true"/>
+      </operator>
+      <operator activated="true" class="irbrecommender:apply_model_ir" compatibility="5.1.001" expanded="true" height="76" name="Apply Model" width="90" x="581" y="300">
+        <parameter key="n" value="100"/>
+        <parameter key="Online updates" value="false"/>
+      </operator>
+      <connect from_port="input 1" to_op="Set Role Train" to_port="example set input"/>
+      <connect from_port="input 2" to_op="Multiply" to_port="input"/>
+      <connect from_op="Set Role Train" from_port="example set output" to_op="Item k-NN" to_port="example set"/>
+      <connect from_op="Item k-NN" from_port="Model" to_op="Update Model" to_port="Model"/>
+      <connect from_op="Multiply" from_port="output 1" to_op="Set Role Query" to_port="example set input"/>
+      <connect from_op="Multiply" from_port="output 2" to_op="Set Role Test" to_port="example set input"/>
+      <connect from_op="Set Role Test" from_port="example set output" to_op="Apply Model" to_port="query set"/>
+      <connect from_op="Set Role Query" from_port="example set output" to_op="Update Model" to_port="query set"/>
+      <connect from_op="Update Model" from_port="Model" to_op="Apply Model" to_port="Model"/>
+      <connect from_op="Apply Model" from_port="result set" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="source_input 2" spacing="0"/>
+      <portSpacing port="source_input 3" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="180"/>
+      <portSpacing port="sink_result 2" spacing="36"/>
+    </process>
+  </operator>
+</process>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="5.3.013">
+  <context>
+    <input>
+      <location>data/collaborative_train</location>
+      <location>data/content_attribute</location>
+      <location>data/collaborative_test</location>
+    </input>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="5.3.013" expanded="true" name="Process">
+    <description>This is the basic example of Attribute based content recommendation workflow. The Item Attribute k-NN model is trained using item attribute data and train data. The recommendation model is evaluated on the test set with the Performance operator.
+For more detailed explanation please see Figure 9.4 in chapter 9 of the RapidMiner: Data Mining Use Cases and Business Analytics Applications book.</description>
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="set_role" compatibility="5.3.013" expanded="true" height="76" name="Set Role Train" width="90" x="179" y="30">
+        <parameter key="attribute_name" value="item_id"/>
+        <parameter key="target_role" value="item identification"/>
+        <list key="set_additional_roles">
+          <parameter key="user_id" value="user identification"/>
+        </list>
+      </operator>
+      <operator activated="true" class="set_role" compatibility="5.3.013" expanded="true" height="76" name="Set Role Attribute" width="90" x="179" y="120">
+        <parameter key="attribute_name" value="attribute_id"/>
+        <parameter key="target_role" value="attribute identification"/>
+        <list key="set_additional_roles">
+          <parameter key="item_id" value="item identification"/>
+        </list>
+      </operator>
+      <operator activated="true" class="irbrecommender:item_attribute_k-NN" compatibility="5.1.000" expanded="true" height="76" name="Item Attribute k-NN" width="90" x="380" y="75">
+        <parameter key="k" value="20"/>
+      </operator>
+      <operator activated="true" class="set_role" compatibility="5.3.013" expanded="true" height="76" name="Set Role Test" width="90" x="179" y="210">
+        <parameter key="attribute_name" value="item_id"/>
+        <parameter key="target_role" value="item identification"/>
+        <list key="set_additional_roles">
+          <parameter key="user_id" value="user identification"/>
+        </list>
+      </operator>
+      <operator activated="true" class="irbrecommender:performance_item_recommendation" compatibility="5.1.000" expanded="true" height="94" name="Performance" width="90" x="648" y="120"/>
+      <connect from_port="input 1" to_op="Set Role Train" to_port="example set input"/>
+      <connect from_port="input 2" to_op="Set Role Attribute" to_port="example set input"/>
+      <connect from_port="input 3" to_op="Set Role Test" to_port="example set input"/>
+      <connect from_op="Set Role Train" from_port="example set output" to_op="Item Attribute k-NN" to_port="example set"/>
+      <connect from_op="Set Role Attribute" from_port="example set output" to_op="Item Attribute k-NN" to_port="item attributes"/>
+      <connect from_op="Item Attribute k-NN" from_port="example set" to_op="Performance" to_port="train set"/>
+      <connect from_op="Item Attribute k-NN" from_port="Model" to_op="Performance" to_port="Model"/>
+      <connect from_op="Set Role Test" from_port="example set output" to_op="Performance" to_port="test set"/>
+      <connect from_op="Performance" from_port="performance" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="source_input 2" spacing="0"/>
+      <portSpacing port="source_input 3" spacing="0"/>
+      <portSpacing port="source_input 4" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="90"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>

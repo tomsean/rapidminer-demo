@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="5.1.004">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="5.1.004" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true" height="732" width="1284">
+      <operator activated="true" class="read_aml" compatibility="5.1.004" expanded="true" height="60" name="Read Signal" width="90" x="45" y="30">
+        <parameter key="attributes" value="/local/data/Root2Ascii/6062_ErzgebirgeAue.aml"/>
+        <parameter key="sample_ratio" value="1.0"/>
+        <parameter key="sample_size" value="-1"/>
+        <parameter key="permute" value="false"/>
+        <parameter key="decimal_point_character" value="."/>
+        <parameter key="column_separators" value=",\s*|;\s*|\s+"/>
+        <parameter key="use_comment_characters" value="true"/>
+        <parameter key="comment_chars" value="#"/>
+        <parameter key="use_quotes" value="false"/>
+        <parameter key="quote_character" value="&quot;"/>
+        <parameter key="quoting_escape_character" value="\"/>
+        <parameter key="trim_lines" value="false"/>
+        <parameter key="skip_error_lines" value="false"/>
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="encoding" value="SYSTEM"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="read_aml" compatibility="5.1.004" expanded="true" height="60" name="Read Background" width="90" x="45" y="165">
+        <parameter key="attributes" value="/local/data/Root2Ascii/4589_ErzgebirgeAue.aml"/>
+        <parameter key="sample_ratio" value="1.0"/>
+        <parameter key="sample_size" value="-1"/>
+        <parameter key="permute" value="false"/>
+        <parameter key="decimal_point_character" value="."/>
+        <parameter key="column_separators" value=",\s*|;\s*|\s+"/>
+        <parameter key="use_comment_characters" value="true"/>
+        <parameter key="comment_chars" value="#"/>
+        <parameter key="use_quotes" value="false"/>
+        <parameter key="quote_character" value="&quot;"/>
+        <parameter key="quoting_escape_character" value="\"/>
+        <parameter key="trim_lines" value="false"/>
+        <parameter key="skip_error_lines" value="false"/>
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="encoding" value="SYSTEM"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="append" compatibility="5.1.004" expanded="true" height="94" name="Append" width="90" x="313" y="75">
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="merge_type" value="all"/>
+      </operator>
+      <operator activated="true" class="generate_attributes" compatibility="5.1.004" expanded="true" height="76" name="Generate Attributes (2)" width="90" x="514" y="75">
+        <list key="function_descriptions">
+          <parameter key="plogl" value="MPEFit_logl/(NCh-2.5)"/>
+          <parameter key="Delta_logl" value="SPEFit8Bayesian_logl - SPEFit8_logl"/>
+          <parameter key="DeltaZenith" value="abs(LineFit_Zenith-MPEFit_Zenith)"/>
+        </list>
+        <parameter key="use_standard_constants" value="true"/>
+        <parameter key="keep_all" value="true"/>
+      </operator>
+      <operator activated="true" class="remap_binominals" compatibility="5.1.004" expanded="true" height="76" name="Remap Binominals" width="90" x="648" y="75">
+        <parameter key="attribute_filter_type" value="all"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="binominal"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="binominal"/>
+        <parameter key="block_type" value="value_matrix_start"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="true"/>
+        <parameter key="negative_value" value="0"/>
+        <parameter key="positive_value" value="1"/>
+      </operator>
+      <operator activated="true" class="x_validation" compatibility="5.1.004" expanded="true" height="112" name="TheValidation" width="90" x="916" y="75">
+        <parameter key="create_complete_model" value="false"/>
+        <parameter key="average_performances_only" value="true"/>
+        <parameter key="leave_one_out" value="false"/>
+        <parameter key="number_of_validations" value="5"/>
+        <parameter key="sampling_type" value="stratified sampling"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+        <process expanded="true" height="691" width="779">
+          <operator activated="true" class="multiply" compatibility="5.1.004" expanded="true" height="94" name="Multiply (3)" width="90" x="45" y="345"/>
+          <operator activated="true" class="filter_examples" compatibility="5.1.004" expanded="true" height="76" name="Get Background" width="90" x="179" y="435">
+            <parameter key="condition_class" value="attribute_value_filter"/>
+            <parameter key="parameter_string" value="label=0"/>
+            <parameter key="invert_filter" value="false"/>
+          </operator>
+          <operator activated="true" class="sample_stratified" compatibility="5.1.004" expanded="true" height="76" name="Sample (3)" width="90" x="313" y="435">
+            <parameter key="sample" value="absolute"/>
+            <parameter key="sample_size" value="28000"/>
+            <parameter key="sample_ratio" value="0.1"/>
+            <parameter key="use_local_random_seed" value="false"/>
+            <parameter key="local_random_seed" value="1992"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="5.1.004" expanded="true" height="76" name="Get Signal" width="90" x="179" y="300">
+            <parameter key="condition_class" value="attribute_value_filter"/>
+            <parameter key="parameter_string" value="label=1"/>
+            <parameter key="invert_filter" value="false"/>
+          </operator>
+          <operator activated="true" class="sample_stratified" compatibility="5.1.004" expanded="true" height="76" name="Sample (2)" width="90" x="313" y="300">
+            <parameter key="sample" value="absolute"/>
+            <parameter key="sample_size" value="28000"/>
+            <parameter key="sample_ratio" value="0.1"/>
+            <parameter key="use_local_random_seed" value="false"/>
+            <parameter key="local_random_seed" value="1992"/>
+          </operator>
+          <operator activated="true" class="append" compatibility="5.1.004" expanded="true" height="94" name="Append (2)" width="90" x="447" y="345">
+            <parameter key="datamanagement" value="double_array"/>
+            <parameter key="merge_type" value="all"/>
+          </operator>
+          <operator activated="true" class="select_attributes" compatibility="5.1.004" expanded="true" height="76" name="Select Attributes (8)" width="90" x="380" y="75">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="weight|EventNumber|QTot|Scheriau_1|MCPrimary_Energy|MCWeightsOneWeight|Set"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="true"/>
+            <parameter key="include_special_attributes" value="true"/>
+          </operator>
+          <operator activated="true" class="weka:W-RandomForest" compatibility="5.1.001" expanded="true" height="76" name="W-RandomForest (2)" width="90" x="581" y="75">
+            <parameter key="I" value="500.0"/>
+            <parameter key="K" value="0.0"/>
+            <parameter key="S" value="1.0"/>
+            <parameter key="D" value="false"/>
+          </operator>
+          <connect from_port="training" to_op="Multiply (3)" to_port="input"/>
+          <connect from_op="Multiply (3)" from_port="output 1" to_op="Get Signal" to_port="example set input"/>
+          <connect from_op="Multiply (3)" from_port="output 2" to_op="Get Background" to_port="example set input"/>
+          <connect from_op="Get Background" from_port="example set output" to_op="Sample (3)" to_port="example set input"/>
+          <connect from_op="Sample (3)" from_port="example set output" to_op="Append (2)" to_port="example set 2"/>
+          <connect from_op="Get Signal" from_port="example set output" to_op="Sample (2)" to_port="example set input"/>
+          <connect from_op="Sample (2)" from_port="example set output" to_op="Append (2)" to_port="example set 1"/>
+          <connect from_op="Append (2)" from_port="merged set" to_op="Select Attributes (8)" to_port="example set input"/>
+          <connect from_op="Select Attributes (8)" from_port="example set output" to_op="W-RandomForest (2)" to_port="training set"/>
+          <connect from_op="W-RandomForest (2)" from_port="model" to_port="model"/>
+          <portSpacing port="source_training" spacing="0"/>
+          <portSpacing port="sink_model" spacing="0"/>
+          <portSpacing port="sink_through 1" spacing="0"/>
+        </process>
+        <process expanded="true" height="691" width="614">
+          <operator activated="true" class="apply_model" compatibility="5.1.004" expanded="true" height="76" name="Apply Model (3)" width="90" x="246" y="30">
+            <list key="application_parameters"/>
+            <parameter key="create_view" value="false"/>
+          </operator>
+          <operator activated="true" class="performance_binominal_classification" compatibility="5.1.004" expanded="true" height="76" name="Performance (3)" width="90" x="380" y="30">
+            <parameter key="main_criterion" value="first"/>
+            <parameter key="accuracy" value="true"/>
+            <parameter key="classification_error" value="false"/>
+            <parameter key="kappa" value="false"/>
+            <parameter key="AUC (optimistic)" value="false"/>
+            <parameter key="AUC" value="false"/>
+            <parameter key="AUC (pessimistic)" value="false"/>
+            <parameter key="precision" value="false"/>
+            <parameter key="recall" value="false"/>
+            <parameter key="lift" value="false"/>
+            <parameter key="fallout" value="false"/>
+            <parameter key="f_measure" value="false"/>
+            <parameter key="false_positive" value="true"/>
+            <parameter key="false_negative" value="true"/>
+            <parameter key="true_positive" value="true"/>
+            <parameter key="true_negative" value="false"/>
+            <parameter key="sensitivity" value="false"/>
+            <parameter key="specificity" value="false"/>
+            <parameter key="youden" value="false"/>
+            <parameter key="positive_predictive_value" value="false"/>
+            <parameter key="negative_predictive_value" value="false"/>
+            <parameter key="psep" value="false"/>
+            <parameter key="skip_undefined_labels" value="true"/>
+            <parameter key="use_example_weights" value="true"/>
+          </operator>
+          <operator activated="true" class="subprocess" compatibility="5.1.004" expanded="true" height="76" name="Subprocess" width="90" x="45" y="165">
+            <process expanded="true" height="681" width="1141">
+              <operator activated="true" class="extract_macro" compatibility="5.1.004" expanded="true" height="60" name="Extract Macro" width="90" x="190" y="119">
+                <parameter key="macro" value="MyMacro"/>
+                <parameter key="macro_type" value="data_value"/>
+                <parameter key="statistics" value="average"/>
+                <parameter key="attribute_name" value="weight"/>
+                <parameter key="example_index" value="1"/>
+              </operator>
+              <operator activated="true" class="generate_attributes" compatibility="5.1.004" expanded="true" height="76" name="Generate Attributes" width="90" x="380" y="120">
+                <list key="function_descriptions">
+                  <parameter key="iteration" value="%{MyMacro}"/>
+                </list>
+                <parameter key="use_standard_constants" value="true"/>
+                <parameter key="keep_all" value="true"/>
+              </operator>
+              <connect from_port="in 1" to_op="Extract Macro" to_port="example set"/>
+              <connect from_op="Extract Macro" from_port="example set" to_op="Generate Attributes" to_port="example set input"/>
+              <connect from_op="Generate Attributes" from_port="example set output" to_port="out 1"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+            </process>
+          </operator>
+          <operator activated="true" class="select_attributes" compatibility="5.1.004" expanded="true" height="76" name="Select Attributes (2)" width="90" x="112" y="390">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="NString|COGZ|DoubleMuFitGeoSplitBayesianParams_StatusI|DoubleMuFitTimeSplitBayesianParams_NDirA|DoubleMuFitTimeSplitBayesianParams_NEarly|LineFit_Zenith|MPEFitMuESLC_NDirA|SPEFit8_NDirA|SPEFit8Bayesian_StatusI|SPEFit8Bayesian_NLate|SPEFit8Noisey_NEarly|SPEFitSingleSLC_NDirA|SPEFitSingleSLC_NEarly|DoubleMuFitTimeSplitBayesian_nmini|MPEFit_rlogl|MPEFitParaboloid_pbf_err_1|MPEFitParaboloid_pbf_sigma_zen|MPEFit_LDirC|MPEFit_NDirC|MPEFit_SmoothAll|MPEFit_logl|NCh|SPEFit8Bayesian_logl|SPEFit8_logl|MPEFit_Zenith|QTot|plogl|Delta_logl|DeltaZenith|Scheriau_1|prediction(label)|SPEFit8GeoSplit1_NDirA|MPEFit_NDirA|MPEFitATWD_rlogl|LineFitSLC_NDirA|DoubleMuFitGeoSplit_StatusI|DoubleMuFitGeoSplitBayesian_StatusI|SPEFitSingle_nmini|SPEFit8_NDirC|SPEFit8Noisey_NDirD|SPEFit8Noisey_LDirD|SPEFit8GeoSplit2_NDirA|SPEFit8GeoSplit2Bayesian_NEarly"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="true"/>
+            <parameter key="include_special_attributes" value="true"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="5.1.004" expanded="true" height="76" name="Get Signal (2)" width="90" x="246" y="210">
+            <parameter key="condition_class" value="attribute_value_filter"/>
+            <parameter key="parameter_string" value="label=1"/>
+            <parameter key="invert_filter" value="false"/>
+          </operator>
+          <operator activated="true" class="write_aml" compatibility="5.1.004" expanded="true" height="60" name="Write Signal" width="90" x="447" y="210">
+            <parameter key="example_set_file" value="/local/data/RF_Output/6062_Erzgebirge.dat"/>
+            <parameter key="format" value="dense"/>
+            <parameter key="zipped" value="false"/>
+            <parameter key="overwrite_mode" value="overwrite first, append then"/>
+            <parameter key="encoding" value="SYSTEM"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="5.1.004" expanded="true" height="76" name="Get Background (2)" width="90" x="246" y="390">
+            <parameter key="condition_class" value="attribute_value_filter"/>
+            <parameter key="parameter_string" value="label =0"/>
+            <parameter key="invert_filter" value="false"/>
+          </operator>
+          <operator activated="true" class="write_aml" compatibility="5.1.004" expanded="true" height="60" name="Write Background" width="90" x="447" y="345">
+            <parameter key="example_set_file" value="/local/data/RF_Output/4589_Erzgebirge.dat"/>
+            <parameter key="format" value="dense"/>
+            <parameter key="zipped" value="false"/>
+            <parameter key="overwrite_mode" value="overwrite first, append then"/>
+            <parameter key="encoding" value="SYSTEM"/>
+          </operator>
+          <connect from_port="model" to_op="Apply Model (3)" to_port="model"/>
+          <connect from_port="test set" to_op="Apply Model (3)" to_port="unlabelled data"/>
+          <connect from_op="Apply Model (3)" from_port="labelled data" to_op="Performance (3)" to_port="labelled data"/>
+          <connect from_op="Performance (3)" from_port="performance" to_port="averagable 1"/>
+          <connect from_op="Performance (3)" from_port="example set" to_op="Subprocess" to_port="in 1"/>
+          <connect from_op="Subprocess" from_port="out 1" to_op="Select Attributes (2)" to_port="example set input"/>
+          <connect from_op="Select Attributes (2)" from_port="example set output" to_op="Get Signal (2)" to_port="example set input"/>
+          <connect from_op="Get Signal (2)" from_port="example set output" to_op="Write Signal" to_port="input"/>
+          <connect from_op="Get Signal (2)" from_port="original" to_op="Get Background (2)" to_port="example set input"/>
+          <connect from_op="Get Background (2)" from_port="example set output" to_op="Write Background" to_port="input"/>
+          <portSpacing port="source_model" spacing="0"/>
+          <portSpacing port="source_test set" spacing="0"/>
+          <portSpacing port="source_through 1" spacing="0"/>
+          <portSpacing port="sink_averagable 1" spacing="0"/>
+          <portSpacing port="sink_averagable 2" spacing="0"/>
+        </process>
+      </operator>
+      <connect from_op="Read Signal" from_port="output" to_op="Append" to_port="example set 1"/>
+      <connect from_op="Read Background" from_port="output" to_op="Append" to_port="example set 2"/>
+      <connect from_op="Append" from_port="merged set" to_op="Generate Attributes (2)" to_port="example set input"/>
+      <connect from_op="Generate Attributes (2)" from_port="example set output" to_op="Remap Binominals" to_port="example set input"/>
+      <connect from_op="Remap Binominals" from_port="example set output" to_op="TheValidation" to_port="training"/>
+      <connect from_op="TheValidation" from_port="averagable 1" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>

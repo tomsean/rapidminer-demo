@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="5.3.013">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="5.3.013" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="retrieve" compatibility="5.3.013" expanded="true" height="60" name="Retrieve" width="90" x="45" y="30">
+        <parameter key="repository_entry" value="../MiningData/BaseMiningTable"/>
+      </operator>
+      <operator activated="true" class="multiply" compatibility="5.3.013" expanded="true" height="94" name="Multiply" width="90" x="179" y="30"/>
+      <operator activated="true" class="sample" compatibility="5.3.013" expanded="true" height="76" name="Balance for training" width="90" x="313" y="30">
+        <parameter key="sample" value="relative"/>
+        <parameter key="balance_data" value="true"/>
+        <parameter key="sample_size" value="100"/>
+        <parameter key="sample_ratio" value="0.1"/>
+        <parameter key="sample_probability" value="0.1"/>
+        <list key="sample_size_per_class">
+          <parameter key="true" value="100"/>
+          <parameter key="false" value="100"/>
+        </list>
+        <list key="sample_ratio_per_class">
+          <parameter key="true" value="1.0"/>
+          <parameter key="false" value="0.1"/>
+        </list>
+        <list key="sample_probability_per_class"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="filter_examples" compatibility="5.3.013" expanded="true" height="76" name="Only non-buyers" width="90" x="313" y="120">
+        <parameter key="condition_class" value="attribute_value_filter"/>
+        <parameter key="parameter_string" value="is_buyer = false"/>
+        <parameter key="invert_filter" value="false"/>
+      </operator>
+      <operator activated="true" class="decision_tree" compatibility="5.3.013" expanded="true" height="76" name="Decision Tree" width="90" x="447" y="30">
+        <parameter key="criterion" value="gain_ratio"/>
+        <parameter key="minimal_size_for_split" value="4"/>
+        <parameter key="minimal_leaf_size" value="3"/>
+        <parameter key="minimal_gain" value="0.05"/>
+        <parameter key="maximal_depth" value="5"/>
+        <parameter key="confidence" value="0.25"/>
+        <parameter key="number_of_prepruning_alternatives" value="3"/>
+        <parameter key="no_pre_pruning" value="false"/>
+        <parameter key="no_pruning" value="false"/>
+      </operator>
+      <operator activated="true" class="write_model" compatibility="5.3.013" expanded="true" height="60" name="Write Model" width="90" x="581" y="30">
+        <parameter key="model_file" value="D:\deployment_thresholds_decision_tree.mod"/>
+        <parameter key="overwrite_existing_file" value="true"/>
+        <parameter key="output_type" value="XML Zipped"/>
+      </operator>
+      <operator activated="true" class="create_threshold" compatibility="5.3.013" expanded="true" height="60" name="Create Threshold" width="90" x="715" y="210">
+        <parameter key="threshold" value="0.6"/>
+        <parameter key="first_class" value="false"/>
+        <parameter key="second_class" value="true"/>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="5.3.013" expanded="true" height="76" name="Apply Model" width="90" x="715" y="75">
+        <list key="application_parameters"/>
+        <parameter key="create_view" value="false"/>
+      </operator>
+      <operator activated="true" class="apply_threshold" compatibility="5.3.013" expanded="true" height="76" name="Apply Threshold" width="90" x="849" y="75"/>
+      <operator activated="true" class="performance_binominal_classification" compatibility="5.3.013" expanded="true" height="76" name="Performance" width="90" x="983" y="30">
+        <parameter key="main_criterion" value="first"/>
+        <parameter key="accuracy" value="true"/>
+        <parameter key="classification_error" value="false"/>
+        <parameter key="kappa" value="false"/>
+        <parameter key="AUC (optimistic)" value="false"/>
+        <parameter key="AUC" value="true"/>
+        <parameter key="AUC (pessimistic)" value="false"/>
+        <parameter key="precision" value="true"/>
+        <parameter key="recall" value="true"/>
+        <parameter key="lift" value="false"/>
+        <parameter key="fallout" value="false"/>
+        <parameter key="f_measure" value="false"/>
+        <parameter key="false_positive" value="false"/>
+        <parameter key="false_negative" value="false"/>
+        <parameter key="true_positive" value="false"/>
+        <parameter key="true_negative" value="false"/>
+        <parameter key="sensitivity" value="false"/>
+        <parameter key="specificity" value="false"/>
+        <parameter key="youden" value="false"/>
+        <parameter key="positive_predictive_value" value="false"/>
+        <parameter key="negative_predictive_value" value="false"/>
+        <parameter key="psep" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+      </operator>
+      <connect from_op="Retrieve" from_port="output" to_op="Multiply" to_port="input"/>
+      <connect from_op="Multiply" from_port="output 1" to_op="Balance for training" to_port="example set input"/>
+      <connect from_op="Multiply" from_port="output 2" to_op="Only non-buyers" to_port="example set input"/>
+      <connect from_op="Balance for training" from_port="example set output" to_op="Decision Tree" to_port="training set"/>
+      <connect from_op="Only non-buyers" from_port="example set output" to_op="Apply Model" to_port="unlabelled data"/>
+      <connect from_op="Decision Tree" from_port="model" to_op="Write Model" to_port="input"/>
+      <connect from_op="Write Model" from_port="through" to_op="Apply Model" to_port="model"/>
+      <connect from_op="Create Threshold" from_port="output" to_op="Apply Threshold" to_port="threshold"/>
+      <connect from_op="Apply Model" from_port="labelled data" to_op="Apply Threshold" to_port="example set"/>
+      <connect from_op="Apply Threshold" from_port="example set" to_op="Performance" to_port="labelled data"/>
+      <connect from_op="Performance" from_port="performance" to_port="result 1"/>
+      <connect from_op="Performance" from_port="example set" to_port="result 2"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <portSpacing port="sink_result 3" spacing="0"/>
+    </process>
+  </operator>
+</process>

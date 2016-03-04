@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="7.0.001">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="7.0.001" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="UTF-8"/>
+    <process expanded="true">
+      <operator activated="true" class="subprocess" compatibility="7.0.001" expanded="true" height="82" name="Subprocess" width="90" x="112" y="187">
+        <process expanded="true">
+          <operator activated="true" class="jdbc_connectors:read_database" compatibility="7.0.001" expanded="true" height="68" name="Read Database" width="90" x="112" y="85">
+            <parameter key="define_connection" value="predefined"/>
+            <parameter key="connection" value="yiqi2"/>
+            <parameter key="database_system" value="MySQL"/>
+            <parameter key="define_query" value="query"/>
+            <parameter key="query" value="SELECT *&#10;FROM `qqmessage` limit 100"/>
+            <parameter key="use_default_schema" value="true"/>
+            <parameter key="prepare_statement" value="false"/>
+            <enumeration key="parameters"/>
+            <parameter key="datamanagement" value="double_array"/>
+          </operator>
+          <connect from_op="Read Database" from_port="output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="7.0.001" expanded="true" height="82" name="Subprocess (2)" width="90" x="246" y="187">
+        <process expanded="true">
+          <operator activated="true" class="jdbc_connectors:update_database" compatibility="7.0.001" expanded="true" height="68" name="Update Database" width="90" x="246" y="136">
+            <parameter key="define_connection" value="predefined"/>
+            <parameter key="connection" value="yiqi2"/>
+            <parameter key="database_system" value="MySQL"/>
+            <parameter key="use_default_schema" value="true"/>
+            <parameter key="table_name" value="qqmessage"/>
+            <parameter key="attribute_filter_type" value="single"/>
+            <parameter key="attribute" value="Id"/>
+            <parameter key="attributes" value=""/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <connect from_port="in 1" to_op="Update Database" to_port="input"/>
+          <connect from_op="Update Database" from_port="through" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <connect from_op="Subprocess" from_port="out 1" to_op="Subprocess (2)" to_port="in 1"/>
+      <connect from_op="Subprocess (2)" from_port="out 1" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>

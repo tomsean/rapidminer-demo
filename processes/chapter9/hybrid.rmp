@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="7.0.001">
+  <context>
+    <input>
+      <location>data/hybrid_test</location>
+      <location>data/hybrid_train</location>
+      <location>data/hybrid_itemword</location>
+    </input>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="6.0.002" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="set_role" compatibility="7.0.001" expanded="true" height="82" name="Set Role Test" width="90" x="45" y="30">
+        <parameter key="attribute_name" value="item_id"/>
+        <parameter key="target_role" value="regular"/>
+        <list key="set_additional_roles">
+          <parameter key="item_id" value="item identification"/>
+          <parameter key="user_id" value="user identification"/>
+        </list>
+      </operator>
+      <operator activated="true" class="set_role" compatibility="7.0.001" expanded="true" height="82" name="Set Role Train" width="90" x="45" y="120">
+        <parameter key="attribute_name" value="item_id"/>
+        <parameter key="target_role" value="regular"/>
+        <list key="set_additional_roles">
+          <parameter key="item_id" value="item identification"/>
+          <parameter key="user_id" value="user identification"/>
+        </list>
+      </operator>
+      <operator activated="true" class="set_role" compatibility="7.0.001" expanded="true" height="82" name="Set Role Item-word" width="90" x="45" y="238">
+        <parameter key="attribute_name" value="item_id"/>
+        <parameter key="target_role" value="regular"/>
+        <list key="set_additional_roles">
+          <parameter key="item_id" value="item identification"/>
+          <parameter key="word_id" value="attribute identification"/>
+        </list>
+      </operator>
+      <operator activated="true" class="multiply" compatibility="7.0.001" expanded="true" height="124" name="Multiply" width="90" x="179" y="120"/>
+      <operator activated="true" class="irbrecommender:item_k-NN" compatibility="5.1.001" expanded="true" height="82" name="Item k-NN" width="90" x="313" y="165">
+        <parameter key="k" value="15"/>
+        <parameter key="Weighted Knn" value="false"/>
+      </operator>
+      <operator activated="true" class="irbrecommender:item_attribute_k-NN" compatibility="5.1.001" expanded="true" height="82" name="Item Attribute k-NN" width="90" x="313" y="255">
+        <parameter key="k" value="15"/>
+      </operator>
+      <operator activated="true" class="irbrecommender:model_combiner_ir" compatibility="5.1.001" expanded="true" height="103" name="Model Combiner" width="90" x="447" y="210">
+        <parameter key="default_weight" value="1.0"/>
+        <list key="model_weights"/>
+      </operator>
+      <operator activated="true" class="irbrecommender:performance_item_recommendation" compatibility="5.1.001" expanded="true" height="103" name="Performance" width="90" x="514" y="30"/>
+      <connect from_port="input 1" to_op="Set Role Test" to_port="example set input"/>
+      <connect from_port="input 2" to_op="Set Role Train" to_port="example set input"/>
+      <connect from_port="input 3" to_op="Set Role Item-word" to_port="example set input"/>
+      <connect from_op="Set Role Test" from_port="example set output" to_op="Performance" to_port="test set"/>
+      <connect from_op="Set Role Train" from_port="example set output" to_op="Multiply" to_port="input"/>
+      <connect from_op="Set Role Item-word" from_port="example set output" to_op="Item Attribute k-NN" to_port="item attributes"/>
+      <connect from_op="Multiply" from_port="output 1" to_op="Performance" to_port="train set"/>
+      <connect from_op="Multiply" from_port="output 2" to_op="Item k-NN" to_port="example set"/>
+      <connect from_op="Multiply" from_port="output 3" to_op="Item Attribute k-NN" to_port="example set"/>
+      <connect from_op="Item k-NN" from_port="Model" to_op="Model Combiner" to_port="model 1"/>
+      <connect from_op="Item Attribute k-NN" from_port="Model" to_op="Model Combiner" to_port="model 2"/>
+      <connect from_op="Model Combiner" from_port="grouped model" to_op="Performance" to_port="Model"/>
+      <connect from_op="Performance" from_port="performance" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="source_input 2" spacing="72"/>
+      <portSpacing port="source_input 3" spacing="72"/>
+      <portSpacing port="source_input 4" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <description align="left" color="yellow" colored="false" height="210" resized="false" width="400" x="25" y="25">This workflow takes input 2 as a train set for recommender systems. We build two item recommendation models: item k-NN (collaborative based) and item attribute k-NN (content based). Item attribute k-NN operator takes additional item attributes from input 3. We combine two models with operator model combiner and test performance on test set (input 1).  Train and test set must contain user_id and item_id attributes which need to have special roles user identification and item identification. This workflow uses recommender system extension. 
+For more informations see Figure 9.7  in chapter 9 of the RapidMiner: Data Mining Use Cases and Business Analytics Applications book.</description>
+    </process>
+  </operator>
+</process>

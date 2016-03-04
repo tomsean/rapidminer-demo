@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="5.1.004">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="5.1.004" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true" height="657" width="1097">
+      <operator activated="true" class="read_aml" compatibility="5.1.004" expanded="true" height="60" name="Read Signal" width="90" x="45" y="120">
+        <parameter key="attributes" value="/net/home.e5.physik.tu-dortmund.de/vol/ph_e5v/e5b/homes/ruhe/10/Datasets/FeatureSelection/Signal_Simulation.aml"/>
+        <parameter key="sample_ratio" value="1.0"/>
+        <parameter key="sample_size" value="-1"/>
+        <parameter key="permute" value="false"/>
+        <parameter key="decimal_point_character" value="."/>
+        <parameter key="column_separators" value=",\s*|;\s*|\s+"/>
+        <parameter key="use_comment_characters" value="true"/>
+        <parameter key="comment_chars" value="#"/>
+        <parameter key="use_quotes" value="true"/>
+        <parameter key="quote_character" value="&quot;"/>
+        <parameter key="quoting_escape_character" value="\"/>
+        <parameter key="trim_lines" value="false"/>
+        <parameter key="skip_error_lines" value="false"/>
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="encoding" value="SYSTEM"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="read_aml" compatibility="5.1.004" expanded="true" height="60" name="Read Background" width="90" x="45" y="300">
+        <parameter key="attributes" value="/net/home.e5.physik.tu-dortmund.de/vol/ph_e5v/e5b/homes/ruhe/10/Datasets/FeatureSelection/Background_Simulation.aml"/>
+        <parameter key="sample_ratio" value="1.0"/>
+        <parameter key="sample_size" value="-1"/>
+        <parameter key="permute" value="false"/>
+        <parameter key="decimal_point_character" value="."/>
+        <parameter key="column_separators" value=",\s*|;\s*|\s+"/>
+        <parameter key="use_comment_characters" value="true"/>
+        <parameter key="comment_chars" value="#"/>
+        <parameter key="use_quotes" value="true"/>
+        <parameter key="quote_character" value="&quot;"/>
+        <parameter key="quoting_escape_character" value="\"/>
+        <parameter key="trim_lines" value="false"/>
+        <parameter key="skip_error_lines" value="false"/>
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="encoding" value="SYSTEM"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="append" compatibility="5.1.004" expanded="true" height="94" name="Append" width="90" x="246" y="210">
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="merge_type" value="all"/>
+      </operator>
+      <operator activated="true" class="loop_parameters" compatibility="5.1.004" expanded="true" height="76" name="Loop Parameters" width="90" x="514" y="210">
+        <list key="parameters">
+          <parameter key="MRMR-FS.k" value="[1;50;49;linear]"/>
+          <parameter key="W-RandomForest.I" value="[10;500;49;linear]"/>
+        </list>
+        <parameter key="synchronize" value="true"/>
+        <process expanded="true" height="675" width="1115">
+          <operator activated="true" class="wrapper_x_validation" compatibility="5.1.004" expanded="true" height="76" name="Validation" width="90" x="185" y="191">
+            <parameter key="leave_one_out" value="false"/>
+            <parameter key="number_of_validations" value="10"/>
+            <parameter key="sampling_type" value="stratified sampling"/>
+            <parameter key="use_local_random_seed" value="false"/>
+            <parameter key="local_random_seed" value="1992"/>
+            <process expanded="true" height="675" width="338">
+              <operator activated="true" class="Exons:mrmr_feature_selection" compatibility="1.0.004" expanded="true" height="76" name="MRMR-FS" width="90" x="104" y="128">
+                <parameter key="normalize_weights" value="true"/>
+                <parameter key="sort_weights" value="true"/>
+                <parameter key="sort_direction" value="ascending"/>
+                <parameter key="sets_or_ranks" value="sets"/>
+                <parameter key="calculate full ranking" value="true"/>
+                <parameter key="k" value="100"/>
+                <parameter key="relevance_redundancy_relation" value="quotient"/>
+                <parameter key="use_ensemble_method" value="none"/>
+                <parameter key="ensemble_size" value="10"/>
+                <parameter key="logging" value="false"/>
+              </operator>
+              <connect from_port="weighting set source" to_op="MRMR-FS" to_port="example set"/>
+              <connect from_op="MRMR-FS" from_port="weights" to_port="attribute weights sink"/>
+              <portSpacing port="source_weighting set source" spacing="0"/>
+              <portSpacing port="sink_attribute weights sink" spacing="0"/>
+            </process>
+            <process expanded="true" height="675" width="338">
+              <operator activated="true" class="weka:W-RandomForest" compatibility="5.1.001" expanded="true" height="76" name="W-RandomForest" width="90" x="103" y="116">
+                <parameter key="I" value="10.0"/>
+                <parameter key="K" value="0.0"/>
+                <parameter key="S" value="1.0"/>
+                <parameter key="D" value="false"/>
+              </operator>
+              <connect from_port="train set source" to_op="W-RandomForest" to_port="training set"/>
+              <connect from_op="W-RandomForest" from_port="model" to_port="model sink"/>
+              <portSpacing port="source_train set source" spacing="0"/>
+              <portSpacing port="sink_model sink" spacing="0"/>
+            </process>
+            <process expanded="true" height="675" width="338">
+              <operator activated="true" class="apply_model" compatibility="5.1.004" expanded="true" height="76" name="Apply Model" width="90" x="45" y="30">
+                <list key="application_parameters"/>
+                <parameter key="create_view" value="false"/>
+              </operator>
+              <operator activated="true" class="performance_binominal_classification" compatibility="5.1.004" expanded="true" height="76" name="Performance" width="90" x="33" y="235">
+                <parameter key="main_criterion" value="first"/>
+                <parameter key="accuracy" value="true"/>
+                <parameter key="classification_error" value="false"/>
+                <parameter key="kappa" value="false"/>
+                <parameter key="AUC (optimistic)" value="false"/>
+                <parameter key="AUC" value="false"/>
+                <parameter key="AUC (pessimistic)" value="false"/>
+                <parameter key="precision" value="false"/>
+                <parameter key="recall" value="false"/>
+                <parameter key="lift" value="false"/>
+                <parameter key="fallout" value="false"/>
+                <parameter key="f_measure" value="false"/>
+                <parameter key="false_positive" value="false"/>
+                <parameter key="false_negative" value="false"/>
+                <parameter key="true_positive" value="false"/>
+                <parameter key="true_negative" value="false"/>
+                <parameter key="sensitivity" value="false"/>
+                <parameter key="specificity" value="false"/>
+                <parameter key="youden" value="false"/>
+                <parameter key="positive_predictive_value" value="false"/>
+                <parameter key="negative_predictive_value" value="false"/>
+                <parameter key="psep" value="false"/>
+                <parameter key="skip_undefined_labels" value="true"/>
+                <parameter key="use_example_weights" value="true"/>
+              </operator>
+              <operator activated="true" class="log" compatibility="5.1.004" expanded="true" height="76" name="Log" width="90" x="179" y="255">
+                <parameter key="filename" value="alogfile.log"/>
+                <list key="log">
+                  <parameter key="accuracy" value="operator.Performance.value.accuracy"/>
+                  <parameter key="i" value="operator.Validation.value.iteration"/>
+                  <parameter key="j" value="operator.Loop Parameters.value.iteration"/>
+                  <parameter key="precision" value="operator.Performance.value.precision"/>
+                  <parameter key="recall" value="operator.Performance.value.recall"/>
+                  <parameter key="false positives" value="operator.Performance.value.false_positive"/>
+                  <parameter key="false negatives" value="operator.Performance.value.false_negative"/>
+                  <parameter key="true positives" value="operator.Performance.value.true_positive"/>
+                  <parameter key="true negatives" value="operator.Performance.value.true_negative"/>
+                </list>
+                <parameter key="sorting_type" value="none"/>
+                <parameter key="sorting_k" value="100"/>
+                <parameter key="persistent" value="true"/>
+              </operator>
+              <operator activated="true" class="free_memory" compatibility="5.1.004" expanded="true" height="76" name="Free Memory" width="90" x="238" y="391"/>
+              <connect from_port="test set source" to_op="Apply Model" to_port="unlabelled data"/>
+              <connect from_port="model source" to_op="Apply Model" to_port="model"/>
+              <connect from_op="Apply Model" from_port="labelled data" to_op="Performance" to_port="labelled data"/>
+              <connect from_op="Performance" from_port="performance" to_op="Log" to_port="through 1"/>
+              <connect from_op="Log" from_port="through 1" to_op="Free Memory" to_port="through 1"/>
+              <connect from_op="Free Memory" from_port="through 1" to_port="performance vector sink"/>
+              <portSpacing port="source_test set source" spacing="0"/>
+              <portSpacing port="source_model source" spacing="0"/>
+              <portSpacing port="sink_performance vector sink" spacing="0"/>
+            </process>
+          </operator>
+          <operator activated="true" class="write_weights" compatibility="5.1.004" expanded="true" height="60" name="Write Weights" width="90" x="433" y="194">
+            <parameter key="attribute_weights_file" value="MyWeights.wgt"/>
+            <parameter key="encoding" value="SYSTEM"/>
+          </operator>
+          <connect from_port="input 1" to_op="Validation" to_port="example set in"/>
+          <connect from_op="Validation" from_port="performance vector out" to_op="Write Weights" to_port="input"/>
+          <portSpacing port="source_input 1" spacing="0"/>
+          <portSpacing port="source_input 2" spacing="0"/>
+          <portSpacing port="sink_performance" spacing="0"/>
+          <portSpacing port="sink_result 1" spacing="0"/>
+          <portSpacing port="sink_result 2" spacing="0"/>
+        </process>
+      </operator>
+      <connect from_op="Read Signal" from_port="output" to_op="Append" to_port="example set 1"/>
+      <connect from_op="Read Background" from_port="output" to_op="Append" to_port="example set 2"/>
+      <connect from_op="Append" from_port="merged set" to_op="Loop Parameters" to_port="input 1"/>
+      <connect from_op="Loop Parameters" from_port="result 1" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>

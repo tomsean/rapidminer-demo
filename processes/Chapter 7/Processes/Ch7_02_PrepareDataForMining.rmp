@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="5.2.003">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="5.2.003" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true" height="474" width="1371">
+      <operator activated="true" class="retrieve" compatibility="5.2.003" expanded="true" height="60" name="Retrieve raw mining table" width="90" x="45" y="30">
+        <parameter key="repository_entry" value="../MiningData/RawMiningTable"/>
+      </operator>
+      <operator activated="true" class="set_role" compatibility="5.2.003" expanded="true" height="76" name="Set Role" width="90" x="179" y="30">
+        <parameter key="name" value="customer_id"/>
+        <parameter key="target_role" value="id"/>
+        <list key="set_additional_roles">
+          <parameter key="is_buyer" value="label"/>
+        </list>
+      </operator>
+      <operator activated="true" class="replace_missing_values" compatibility="5.2.003" expanded="true" height="94" name="Replace Missing Values" width="90" x="313" y="30">
+        <parameter key="return_preprocessing_model" value="false"/>
+        <parameter key="create_view" value="false"/>
+        <parameter key="attribute_filter_type" value="subset"/>
+        <parameter key="attribute" value="income"/>
+        <parameter key="attributes" value="family_status|income|"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="default" value="none"/>
+        <list key="columns">
+          <parameter key="family_status" value="value"/>
+          <parameter key="income" value="zero"/>
+        </list>
+        <parameter key="replenishment_value" value="unknown"/>
+      </operator>
+      <operator activated="true" class="remove_useless_attributes" compatibility="5.2.003" expanded="true" height="76" name="Remove Useless Attributes" width="90" x="447" y="30">
+        <parameter key="numerical_min_deviation" value="0.0"/>
+        <parameter key="nominal_useless_above" value="0.99"/>
+        <parameter key="nominal_remove_id_like" value="false"/>
+        <parameter key="nominal_useless_below" value="0.01"/>
+      </operator>
+      <operator activated="true" class="discretize_by_user_specification" compatibility="5.2.003" expanded="true" height="94" name="Discretize age" width="90" x="581" y="30">
+        <parameter key="return_preprocessing_model" value="false"/>
+        <parameter key="create_view" value="false"/>
+        <parameter key="attribute_filter_type" value="single"/>
+        <parameter key="attribute" value="current_age"/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="numeric"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="real"/>
+        <parameter key="block_type" value="value_series"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_series_end"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="attribute_type" value="nominal"/>
+        <list key="classes">
+          <parameter key="kids" value="12.0"/>
+          <parameter key="teens" value="18.0"/>
+          <parameter key="young_adults" value="25.0"/>
+          <parameter key="adults" value="45.0"/>
+          <parameter key="seniors" value="60.0"/>
+          <parameter key="pensioners" value="Infinity"/>
+        </list>
+      </operator>
+      <operator activated="true" class="discretize_by_bins" compatibility="5.2.003" expanded="true" height="94" name="Discretize monetary amounts" width="90" x="715" y="30">
+        <parameter key="return_preprocessing_model" value="false"/>
+        <parameter key="create_view" value="false"/>
+        <parameter key="attribute_filter_type" value="subset"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="|overdraft_total|insurance_sum|income_sum|creditcard_sum|cash_withdrawals_sum"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="numeric"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="real"/>
+        <parameter key="block_type" value="value_series"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_series_end"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="number_of_bins" value="5"/>
+        <parameter key="define_boundaries" value="false"/>
+        <parameter key="range_name_type" value="long"/>
+        <parameter key="automatic_number_of_digits" value="true"/>
+        <parameter key="number_of_digits" value="3"/>
+      </operator>
+      <operator activated="true" class="discretize_by_user_specification" compatibility="5.2.003" expanded="true" height="94" name="Discretize income" width="90" x="849" y="30">
+        <parameter key="return_preprocessing_model" value="false"/>
+        <parameter key="create_view" value="false"/>
+        <parameter key="attribute_filter_type" value="single"/>
+        <parameter key="attribute" value="income"/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="numeric"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="real"/>
+        <parameter key="block_type" value="value_series"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_series_end"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="attribute_type" value="nominal"/>
+        <list key="classes">
+          <parameter key="low" value="20000.0"/>
+          <parameter key="medium" value="50000.0"/>
+          <parameter key="high" value="Infinity"/>
+        </list>
+      </operator>
+      <operator activated="true" class="discretize_by_user_specification" compatibility="5.2.003" expanded="true" height="94" name="Discretize duration" width="90" x="983" y="30">
+        <parameter key="return_preprocessing_model" value="false"/>
+        <parameter key="create_view" value="false"/>
+        <parameter key="attribute_filter_type" value="single"/>
+        <parameter key="attribute" value="customer_for_years"/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="numeric"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="real"/>
+        <parameter key="block_type" value="value_series"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_series_end"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="attribute_type" value="nominal"/>
+        <list key="classes">
+          <parameter key="short" value="1.0"/>
+          <parameter key="medium" value="4.0"/>
+          <parameter key="long" value="15.0"/>
+          <parameter key="very_long" value="Infinity"/>
+        </list>
+      </operator>
+      <operator activated="true" class="select_attributes" compatibility="5.2.003" expanded="true" height="76" name="Remove attributes not needed" width="90" x="1117" y="30">
+        <parameter key="attribute_filter_type" value="subset"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="year_of_birth|"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="true"/>
+        <parameter key="include_special_attributes" value="false"/>
+      </operator>
+      <operator activated="true" class="store" compatibility="5.2.003" expanded="true" height="60" name="Store" width="90" x="1251" y="30">
+        <parameter key="repository_entry" value="../MiningData/BaseMiningTable"/>
+      </operator>
+      <connect from_op="Retrieve raw mining table" from_port="output" to_op="Set Role" to_port="example set input"/>
+      <connect from_op="Set Role" from_port="example set output" to_op="Replace Missing Values" to_port="example set input"/>
+      <connect from_op="Replace Missing Values" from_port="example set output" to_op="Remove Useless Attributes" to_port="example set input"/>
+      <connect from_op="Remove Useless Attributes" from_port="example set output" to_op="Discretize age" to_port="example set input"/>
+      <connect from_op="Discretize age" from_port="example set output" to_op="Discretize monetary amounts" to_port="example set input"/>
+      <connect from_op="Discretize monetary amounts" from_port="example set output" to_op="Discretize income" to_port="example set input"/>
+      <connect from_op="Discretize income" from_port="example set output" to_op="Discretize duration" to_port="example set input"/>
+      <connect from_op="Discretize duration" from_port="example set output" to_op="Remove attributes not needed" to_port="example set input"/>
+      <connect from_op="Remove attributes not needed" from_port="example set output" to_op="Store" to_port="input"/>
+      <connect from_op="Store" from_port="through" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>

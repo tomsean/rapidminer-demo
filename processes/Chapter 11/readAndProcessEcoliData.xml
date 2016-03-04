@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="5.2.006">
+  <context>
+    <input/>
+    <output/>
+    <macros>
+      <macro>
+        <key>fileToRead</key>
+        <value>file containing ecoli data</value>
+      </macro>
+    </macros>
+  </context>
+  <operator activated="true" class="process" compatibility="5.2.006" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <parameter key="parallelize_main_process" value="false"/>
+    <process expanded="true" height="566" width="818">
+      <operator activated="true" class="read_csv" compatibility="5.2.006" expanded="true" height="60" name="Read CSV" width="90" x="112" y="30">
+        <parameter key="csv_file" value="%{fileToRead}"/>
+        <parameter key="column_separators" value="[ ]*\s"/>
+        <parameter key="trim_lines" value="false"/>
+        <parameter key="use_quotes" value="true"/>
+        <parameter key="quotes_character" value="&quot;"/>
+        <parameter key="escape_character_for_quotes" value="\"/>
+        <parameter key="skip_comments" value="false"/>
+        <parameter key="comment_characters" value="#"/>
+        <parameter key="parse_numbers" value="true"/>
+        <parameter key="decimal_character" value="."/>
+        <parameter key="grouped_digits" value="false"/>
+        <parameter key="grouping_character" value=","/>
+        <parameter key="date_format" value=""/>
+        <parameter key="first_row_as_names" value="false"/>
+        <list key="annotations"/>
+        <parameter key="time_zone" value="SYSTEM"/>
+        <parameter key="locale" value="English (United States)"/>
+        <parameter key="encoding" value="windows-1252"/>
+        <list key="data_set_meta_data_information">
+          <parameter key="0" value="att1.true.polynominal.attribute"/>
+          <parameter key="1" value="att2.true.real.attribute"/>
+          <parameter key="2" value="att3.true.real.attribute"/>
+          <parameter key="3" value="att4.true.real.attribute"/>
+          <parameter key="4" value="att5.true.real.attribute"/>
+          <parameter key="5" value="att6.true.real.attribute"/>
+          <parameter key="6" value="att7.true.real.attribute"/>
+          <parameter key="7" value="att8.true.real.attribute"/>
+          <parameter key="8" value="att9.true.polynominal.attribute"/>
+        </list>
+        <parameter key="read_not_matching_values_as_missings" value="false"/>
+        <parameter key="datamanagement" value="double_array"/>
+      </operator>
+      <operator activated="true" class="rename" compatibility="5.2.006" expanded="true" height="76" name="Rename" width="90" x="112" y="120">
+        <parameter key="old_name" value="att1"/>
+        <parameter key="new_name" value="sequenceName"/>
+        <list key="rename_additional_attributes">
+          <parameter key="att2" value="mcg"/>
+          <parameter key="att3" value="gvh"/>
+          <parameter key="att4" value="lip"/>
+          <parameter key="att5" value="chg"/>
+          <parameter key="att6" value="aac"/>
+          <parameter key="att7" value="alm1"/>
+          <parameter key="att8" value="alm2"/>
+          <parameter key="att9" value="site"/>
+        </list>
+      </operator>
+      <operator activated="true" class="set_role" compatibility="5.2.006" expanded="true" height="76" name="Set Role" width="90" x="112" y="210">
+        <parameter key="name" value="site"/>
+        <parameter key="target_role" value="label"/>
+        <list key="set_additional_roles">
+          <parameter key="sequenceName" value="id"/>
+        </list>
+      </operator>
+      <connect from_op="Read CSV" from_port="output" to_op="Rename" to_port="example set input"/>
+      <connect from_op="Rename" from_port="example set output" to_op="Set Role" to_port="example set input"/>
+      <connect from_op="Set Role" from_port="example set output" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>

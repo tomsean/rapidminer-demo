@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<attributeset default_source="/home/truhe/data/Root2Ascii/EventSelectionSignal.dat" encoding="UTF-8">
+  <attribute name="NString" sourcecol="1" valuetype="integer"/>
+  <attribute name="COGZ" sourcecol="2" valuetype="real"/>
+  <attribute name="DoubleMuFitGeoSplitBayesianParams_StatusI" sourcecol="3" valuetype="integer"/>
+  <attribute name="DoubleMuFitTimeSplitBayesianParams_NDirA" sourcecol="4" valuetype="integer"/>
+  <attribute name="DoubleMuFitTimeSplitBayesianParams_NEarly" sourcecol="5" valuetype="integer"/>
+  <attribute name="LineFit_Zenith" sourcecol="6" valuetype="real"/>
+  <attribute name="MPEFitMuESLC_NDirA" sourcecol="7" valuetype="integer"/>
+  <attribute name="SPEFit8_NDirA" sourcecol="8" valuetype="integer"/>
+  <attribute name="SPEFit8Bayesian_StatusI" sourcecol="9" valuetype="integer"/>
+  <attribute name="SPEFit8Bayesian_NLate" sourcecol="10" valuetype="integer"/>
+  <attribute name="SPEFit8Noisey_NEarly" sourcecol="11" valuetype="integer"/>
+  <attribute name="SPEFitSingleSLC_NDirA" sourcecol="12" valuetype="integer"/>
+  <attribute name="SPEFitSingleSLC_NEarly" sourcecol="13" valuetype="integer"/>
+  <attribute name="DoubleMuFitTimeSplitBayesian_nmini" sourcecol="14" valuetype="real"/>
+  <attribute name="MPEFit_rlogl" sourcecol="15" valuetype="real"/>
+  <attribute name="MPEFitParaboloid_pbf_err_1" sourcecol="16" valuetype="real"/>
+  <attribute name="MPEFitParaboloid_pbf_sigma_zen" sourcecol="17" valuetype="real"/>
+  <attribute name="MPEFit_LDirC" sourcecol="18" valuetype="real"/>
+  <attribute name="MPEFit_NDirC" sourcecol="19" valuetype="integer"/>
+  <attribute name="MPEFit_SmoothAll" sourcecol="20" valuetype="real"/>
+  <attribute name="MPEFit_logl" sourcecol="21" valuetype="real"/>
+  <attribute name="NCh" sourcecol="22" valuetype="integer"/>
+  <attribute name="SPEFit8Bayesian_logl" sourcecol="23" valuetype="real"/>
+  <attribute name="SPEFit8_logl" sourcecol="24" valuetype="real"/>
+  <attribute name="MPEFit_Zenith" sourcecol="25" valuetype="real"/>
+  <attribute name="LineFit_LFVel" sourcecol="26" valuetype="real"/>
+  <attribute name="EventNumber" sourcecol="27" valuetype="integer"/>
+  <weight name="weight" sourcecol="28" valuetype="real"/>
+  <label name="label" sourcecol="29" valuetype="binominal">
+    <value>0</value>
+  </label>
+</attributeset>
